@@ -18,27 +18,32 @@
         .btn-reiniciar:hover { background-color: #46627F; }
 
         /* Contenedor Principal en 2 Columnas */
-        main { flex: 1; display: grid; grid-template-columns: 1fr 1.15fr; gap: 30px; padding: 25px 35px; align-items: center; max-width: 1400px; width: 100%; margin: 0 auto; }
+        main { flex: 1; display: grid; grid-template-columns: 0.95fr 1.25fr; gap: 30px; padding: 20px 35px; align-items: center; max-width: 1450px; width: 100%; margin: 0 auto; }
 
         /* Columna Izquierda: Ruleta */
         .columna-ruleta { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .contenedor-canvas { position: relative; width: 360px; height: 360px; display: flex; justify-content: center; align-items: center; }
+        .contenedor-canvas { position: relative; width: 350px; height: 350px; display: flex; justify-content: center; align-items: center; }
         canvas { border-radius: 50%; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.35)); }
         .flecha { position: absolute; top: 2px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-top: 32px solid #E74C3C; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); z-index: 5; }
-        .btn-girar { margin-top: 20px; background-color: #E67E22; color: white; border: none; padding: 14px 38px; font-size: 1.25rem; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: 0.2s; }
+        .btn-girar { margin-top: 18px; background-color: #E67E22; color: white; border: none; padding: 14px 38px; font-size: 1.2rem; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: 0.2s; }
         .btn-girar:hover:not(:disabled) { background-color: #D35400; transform: translateY(-2px); }
         .btn-girar:disabled { background-color: #7F8C8D; cursor: not-allowed; opacity: 0.7; }
 
         /* Columna Derecha: Tarjeta de Preguntas */
-        .tarjeta-pregunta { background-color: #34495E; padding: 28px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; min-height: 460px; box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
-        .categoria { font-size: 1.35rem; font-weight: bold; text-align: center; color: #BDC3C7; margin-bottom: 12px; }
-        .enunciado { font-size: 1.25rem; text-align: center; line-height: 1.45; margin: 15px 0 25px 0; min-height: 75px; display: flex; align-items: center; justify-content: center; }
-        .opciones { display: flex; flex-direction: column; gap: 12px; }
-        .btn-opcion { background-color: #ECF0F1; color: #2C3E50; border: none; padding: 15px 18px; font-size: 1.08rem; font-weight: bold; border-radius: 8px; cursor: pointer; text-align: left; transition: 0.15s; }
+        .tarjeta-pregunta { background-color: #34495E; padding: 24px 28px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; min-height: 500px; box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
+        .categoria { font-size: 1.3rem; font-weight: bold; text-align: center; color: #BDC3C7; margin-bottom: 8px; }
+        .enunciado { font-size: 1.2rem; text-align: center; line-height: 1.4; margin: 10px 0 18px 0; min-height: 65px; display: flex; align-items: center; justify-content: center; }
+        .opciones { display: flex; flex-direction: column; gap: 10px; }
+        .btn-opcion { background-color: #ECF0F1; color: #2C3E50; border: none; padding: 13px 16px; font-size: 1.05rem; font-weight: bold; border-radius: 8px; cursor: pointer; text-align: left; transition: 0.15s; }
         .btn-opcion:hover:not(:disabled) { background-color: #D6DBDF; transform: translateX(4px); }
         .btn-opcion:disabled { cursor: not-allowed; color: #7F8C8D; }
         .btn-opcion.correcta { background-color: #2ECC71 !important; color: white !important; }
         .btn-opcion.incorrecta { background-color: #E74C3C !important; color: white !important; }
+
+        /* Caja de Explicación Clínica */
+        .caja-explicacion { margin-top: 16px; padding: 14px 16px; border-radius: 8px; background-color: #1A252F; border-left: 5px solid #3498DB; font-size: 0.98rem; line-height: 1.45; color: #ECF0F1; display: none; animation: aparecer 0.25s ease-out; }
+        .caja-explicacion strong { color: #5DADE2; display: block; margin-bottom: 4px; font-size: 1rem; }
+        @keyframes aparecer { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Modal de Fin de Juego */
         .modal-fondo { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; z-index: 20; padding: 15px; }
@@ -52,8 +57,8 @@
         /* Adaptación automática para celulares */
         @media (max-width: 900px) {
             main { grid-template-columns: 1fr; padding: 15px; }
-            .contenedor-canvas { width: 290px; height: 290px; }
-            .tarjeta-pregunta { min-height: auto; padding: 20px; }
+            .contenedor-canvas { width: 280px; height: 280px; }
+            .tarjeta-pregunta { min-height: auto; padding: 18px; }
             header { flex-direction: column; text-align: center; }
         }
     </style>
@@ -89,6 +94,10 @@
                 <button class="btn-opcion" disabled>Opción C</button>
                 <button class="btn-opcion" disabled>Opción D</button>
             </div>
+            <div class="caja-explicacion" id="caja-explicacion">
+                <strong>🩺 Perla Farmacológica:</strong>
+                <span id="texto-explicacion"></span>
+            </div>
         </div>
     </main>
 
@@ -109,23 +118,195 @@ const PUNTOS_POR_ACIERTO = 100;
 
 const BANCO_PREGUNTAS = {
     "Clase I": [
-        { pregunta: "¿Cuál de los siguientes fármacos pertenece a la Clase IC (potente bloqueo de canales de Na+)?", opciones: ["Flecainida", "Amiodarona", "Verapamilo", "Sotalol"], respuesta: "Flecainida" },
-        { pregunta: "¿Qué antiarrítmico de Clase IA se asocia clásicamente con el síndrome de 'cinconismo'?", opciones: ["Quinidina", "Lidocaína", "Propafenona", "Diltiazem"], respuesta: "Quinidina" },
-        { pregunta: "¿Cuál es un fármaco de Clase IB útil en arritmias ventriculares agudas post-infarto?", opciones: ["Lidocaína", "Dronedarona", "Procainamida", "Ibutilida"], respuesta: "Lidocaína" },
-        { pregunta: "¿Qué fármaco de Clase IA puede inducir un síndrome similar al lupus eritematoso sistémico?", opciones: ["Procainamida", "Mexiletina", "Flecainida", "Dofetilida"], respuesta: "Procainamida" },
-        { pregunta: "¿Cuál de estos fármacos es un bloqueador de canales de sodio de Clase IC con débil actividad beta-bloqueadora?", opciones: ["Propafenona", "Disopiramida", "Verapamilo", "Amiodarona"], respuesta: "Propafenona" }
+        {
+            pregunta: "¿Cuál de los siguientes fármacos pertenece a la Clase IC (potente bloqueo de canales de Na+ con disociación lenta)?",
+            opciones: ["Flecainida", "Amiodarona", "Verapamilo", "Sotalol"],
+            respuesta: "Flecainida",
+            explicacion: "La Flecainida (Clase IC) bloquea potentemente los canales de Na+ rápidos (cinética de disociación lenta), reduciendo la pendiente de la fase 0 sin alterar la duración del potencial de acción."
+        },
+        {
+            pregunta: "¿Qué antiarrítmico de Clase IA se asocia clásicamente con el síndrome de 'cinconismo' (tinnitus, cefalea, visión borrosa)?",
+            opciones: ["Quinidina", "Lidocaína", "Propafenona", "Diltiazem"],
+            respuesta: "Quinidina",
+            explicacion: "La Quinidina (Clase IA) produce cinconismo en dosis tóxicas, además de prolongar el intervalo QT con riesgo de Torsades de Pointes."
+        },
+        {
+            pregunta: "¿Cuál es un fármaco de Clase IB de administración endovenosa útil en arritmias ventriculares isquémicas agudas?",
+            opciones: ["Lidocaína", "Dronedarona", "Procainamida", "Ibutilida"],
+            respuesta: "Lidocaína",
+            explicacion: "La Lidocaína (Clase IB) tiene alta afinidad por canales de Na+ en estado inactivo (tejido ventricular isquémico/despolarizado) y acorta la fase 3 repolarizante."
+        },
+        {
+            pregunta: "¿Qué fármaco de Clase IA se metaboliza a N-acetilprocainamida (NAPA) y puede inducir lupus medicamentoso?",
+            opciones: ["Procainamida", "Mexiletina", "Flecainida", "Dofetilida"],
+            respuesta: "Procainamida",
+            explicacion: "La Procainamida genera anticuerpos anti-histona y síndrome lúpico reversible, especialmente en acetiladores lentos. Su metabolito NAPA tiene actividad de Clase III."
+        },
+        {
+            pregunta: "¿Cuál de estos fármacos es un bloqueador de canales de Na+ de Clase IC que posee además actividad beta-bloqueadora débil?",
+            opciones: ["Propafenona", "Disopiramida", "Verapamilo", "Amiodarona"],
+            respuesta: "Propafenona",
+            explicacion: "La Propafenona (Clase IC) tiene similitud estructural con los beta-bloqueadores y se emplea frecuentemente como estrategia 'pill-in-the-pocket' en FA paroxística sin cardiopatía estructural."
+        },
+        {
+            pregunta: "¿Qué fármaco de Clase IA destaca por su potente efecto anticolinérgico (retención urinaria, boca seca, glaucoma) e inotrópico negativo?",
+            opciones: ["Disopiramida", "Mexiletina", "Lidocaína", "Esmolol"],
+            respuesta: "Disopiramida",
+            explicacion: "La Disopiramida (Clase IA) posee intensos efectos antimuscarínicos M2 y deprime la contractilidad, por lo que llega a utilizarse en miocardiopatía hipertrófica obstructiva."
+        },
+        {
+            pregunta: "¿Cuál es el análogo oral de la lidocaína perteneciente a la Clase IB, útil en arritmias ventriculares crónicas y síndrome de QT largo tipo 3?",
+            opciones: ["Mexiletina", "Quinidina", "Flecainida", "Diltiazem"],
+            respuesta: "Mexiletina",
+            explicacion: "La Mexiletina es un antiarrítmico de Clase IB activo por vía oral (no sufre el alto metabolismo de primer paso hepático de la lidocaína)."
+        },
+        {
+            pregunta: "¿Por qué están contraindicados la Flecainida y la Propafenona (Clase IC) en pacientes con cardiopatía isquémica o infarto previo?",
+            opciones: ["Aumentan la mortalidad por efecto proarrítmico ventricular (estudio CAST)", "Causan fibrosis pulmonar irreversible", "Provocan bloqueo AV completo por bloqueo de Ca2+", "Inducen agranulocitosis severa en el 50% de los casos"],
+            respuesta: "Aumentan la mortalidad por efecto proarrítmico ventricular (estudio CAST)",
+            explicacion: "El ensayo clínico CAST demostró que los antiarrítmicos Clase IC aumentan la mortalidad por arritmias ventriculares letales en pacientes con daño estructural o cicatriz post-IAM."
+        },
+        {
+            pregunta: "¿Qué fármaco anticonvulsivante actúa también como antiarrítmico de Clase IB en arritmias inducidas por intoxicación digitálica?",
+            opciones: ["Fenitoína", "Carbamazepina", "Ácido valproico", "Levetiracetam"],
+            respuesta: "Fenitoína",
+            explicacion: "La Fenitoína comparte propiedades electrofisiológicas de Clase IB (cinética rápida sobre canales de Na+) y revierte eficazmente las arritmias ventriculares por digoxina."
+        },
+        {
+            pregunta: "¿Qué subclase de la Clase I acorta la duración del potencial de acción en lugar de prolongarlo o mantenerlo igual?",
+            opciones: ["Clase IB (Lidocaína, Mexiletina)", "Clase IA (Quinidina, Procainamida)", "Clase IC (Flecainida, Propafenona)", "Ninguna subclase de la Clase I"],
+            respuesta: "Clase IB (Lidocaína, Mexiletina)",
+            explicacion: "Los fármacos de Clase IB se disocian muy rápido del canal de Na+ y acortan la duración del potencial de acción (fase 3), mientras que los IA la prolongan y los IC casi no la modifican."
+        }
     ],
     "Clase III": [
-        { pregunta: "¿Cuál es el fármaco de Clase III conocido por causar toxicidad pulmonar, tiroidea y depósitos corneales?", opciones: ["Amiodarona", "Propafenona", "Lidocaína", "Diltiazem"], respuesta: "Amiodarona" },
-        { pregunta: "¿Qué antiarrítmico de Clase III combina el bloqueo de canales de K+ con actividad beta-bloqueadora no selectiva?", opciones: ["Sotalol", "Dronedarona", "Flecainida", "Verapamilo"], respuesta: "Sotalol" },
-        { pregunta: "¿Qué análogo no yodado de la amiodarona pertenece a la Clase III y está contraindicado en insuficiencia cardíaca severa?", opciones: ["Dronedarona", "Quinidina", "Mexiletina", "Procainamida"], respuesta: "Dronedarona" },
-        { pregunta: "¿Cuál de los siguientes es un bloqueador puro de canales de potasio (Clase III) usado para cardioversión farmacológica de flutter auricular?", opciones: ["Dofetilida", "Disopiramida", "Lidocaína", "Verapamilo"], respuesta: "Dofetilida" }
+        {
+            pregunta: "¿Cuál es el fármaco de Clase III que se asocia con fibrosis pulmonar, disfunción tiroidea (hipo/hipertiroidismo) y microdepósitos corneales?",
+            opciones: ["Amiodarona", "Propafenona", "Lidocaína", "Diltiazem"],
+            respuesta: "Amiodarona",
+            explicacion: "La Amiodarona contiene alto porcentaje de yodo y una vida media de semanas. Pese a prolongar el QT, tiene bajo riesgo de Torsades de Pointes porque bloquea homogéneamente canales IKr, Na+, Ca2+ y receptores beta."
+        },
+        {
+            pregunta: "¿Qué antiarrítmico de Clase III es una mezcla racémica que combina el bloqueo de canales de K+ (IKr) con bloqueo beta-adrenérgico no selectivo?",
+            opciones: ["Sotalol", "Dronedarona", "Flecainida", "Verapamilo"],
+            respuesta: "Sotalol",
+            explicacion: "El Sotalol prolonga el potencial de acción (Clase III) y frena el nodo sinusal/AV por efecto beta-bloqueador. Se elimina por vía renal y tiene riesgo dosis-dependiente de Torsades de Pointes."
+        },
+        {
+            pregunta: "¿Qué análogo no yodado de la amiodarona (Clase III) reduce la toxicidad tiroidea pero está contraindicado en insuficiencia cardíaca descompensada o FA permanente?",
+            opciones: ["Dronedarona", "Quinidina", "Mexiletina", "Procainamida"],
+            respuesta: "Dronedarona",
+            explicacion: "La Dronedarona carece de átomos de yodo (menor toxicidad tiroidea/pulmonar), pero aumentó la mortalidad en pacientes con IC avanzada (estudio ANDROMEDA) y FA permanente (estudio PALLAS)."
+        },
+        {
+            pregunta: "¿Cuál de los siguientes es un bloqueador puro de canales de K+ (IKr) de Clase III utilizado por vía oral para mantener el ritmo sinusal en FA?",
+            opciones: ["Dofetilida", "Disopiramida", "Lidocaína", "Verapamilo"],
+            respuesta: "Dofetilida",
+            explicacion: "La Dofetilida es un bloqueador selectivo del componente rápido de la corriente rectificadora tardía de K+ (IKr). No tiene efectos extracardíacos, pero exige ajuste estricto según clearance de creatinina por riesgo de QT largo."
+        },
+        {
+            pregunta: "¿Qué fármaco de Clase III de uso exclusivamente endovenoso revierte rápidamente el flutter y la fibrilación auricular al activar además una corriente lenta de entrada de Na+?",
+            opciones: ["Ibutilida", "Sotalol", "Mexiletina", "Diltiazem"],
+            respuesta: "Ibutilida",
+            explicacion: "La Ibutilida (IV) bloquea canales de K+ (IKr) y activa una corriente lenta de entrada de Na+, siendo particularmente eficaz para la cardioversión farmacológica aguda del flutter auricular."
+        },
+        {
+            pregunta: "¿Cuál es la principal alteración electrocardiográfica inducida por la mayoría de los fármacos de la Clase III?",
+            opciones: ["Prolongación del intervalo QT (por retraso de la fase 3 de repolarización)", "Acortamiento marcado del intervalo PR", "Estrechamiento del complejo QRS", "Elevación difusa del segmento ST"],
+            respuesta: "Prolongación del intervalo QT (por retraso de la fase 3 de repolarización)",
+            explicacion: "Al bloquear los canales de K+ responsables de la fase 3 repolarizante, los fármacos de Clase III prolongan el período refractario efectivo y la duración del potencial de acción, alargando el intervalo QT."
+        },
+        {
+            pregunta: "¿Qué arritmia ventricular polimórfica es el efecto adverso más temido del Sotalol, Dofetilida e Ibutilida (Clase III)?",
+            opciones: ["Torsades de Pointes", "Ritmo idioventricular acelerado", "Taquicardia auricular multifocal", "Bloqueo sinoauricular de segundo grado"],
+            respuesta: "Torsades de Pointes",
+            explicacion: "La prolongación excesiva de la repolarización favorece posdespolarizaciones precoces (EADs) que desencadenan Torsades de Pointes, especialmente en presencia de bradicardia o hipopotasemia."
+        },
+        {
+            pregunta: "¿Qué antiarrítmico de Clase III se prefiere para mantener el ritmo sinusal en pacientes con insuficiencia cardíaca con fracción de eyección reducida (ICFEr)?",
+            opciones: ["Amiodarona", "Dronedarona", "Sotalol", "Flecainida"],
+            respuesta: "Amiodarona",
+            explicacion: "En pacientes con ICFEr o hipertrofia ventricular izquierda severa, la Amiodarona (y en centros especializados la Dofetilida) es el antiarrítmico seguro por su mínimo efecto inotrópico negativo y baja tasa de Torsades."
+        },
+        {
+            pregunta: "¿Cómo se denomina la propiedad de muchos fármacos de Clase III (como Sotalol o Dofetilida) de prolongar aún más el QT cuando la frecuencia cardíaca es baja?",
+            opciones: ["Dependencia inversa del uso (reverse use-dependence)", "Taquifilaxia de membrana", "Efecto Bowditch positivo", "Conducción oculta retrógrada"],
+            respuesta: "Dependencia inversa del uso (reverse use-dependence)",
+            explicacion: "La dependencia inversa del uso significa que la prolongación del potencial de acción es mayor a frecuencias cardíacas lentas (pausas o bradicardia), aumentando el riesgo de Torsades de Pointes."
+        },
+        {
+            pregunta: "¿Con qué fármacos de uso común interactúa la Amiodarona aumentando sus niveles plasmáticos y riesgo de toxicidad al inhibir CYP2C9, CYP2D6 y la glicoproteína P?",
+            opciones: ["Warfarina y Digoxina", "Metformina y Lisinopril", "Amoxicilina y Paracetamol", "Furosemida y Espironolactona"],
+            respuesta: "Warfarina y Digoxina",
+            explicacion: "Al iniciar Amiodarona en un paciente anticoagulado con Warfarina o que usa Digoxina, se debe reducir la dosis de ambos (usualmente entre 30% y 50%) para evitar hemorragias o intoxicación digitálica."
+        }
     ],
     "Clase IV": [
-        { pregunta: "¿Cuál de los siguientes es un calcioantagonista no dihidropiridínico perteneciente a la Clase IV?", opciones: ["Verapamilo", "Nifedipino", "Amlodipino", "Amiodarona"], respuesta: "Verapamilo" },
-        { pregunta: "¿Qué fármaco de Clase IV bloquea los canales de Ca2+ tipo L y disminuye la conducción en el nodo AV?", opciones: ["Diltiazem", "Sotalol", "Flecainida", "Lidocaína"], respuesta: "Diltiazem" },
-        { pregunta: "¿Qué efecto adverso es el más característico del Verapamilo (Clase IV) a nivel gastrointestinal?", opciones: ["Estreñimiento", "Diarrea osmótica", "Hiperplasia gingival severa", "Cinconismo"], respuesta: "Estreñimiento" },
-        { pregunta: "¿En cuál de las siguientes situaciones están contraindicados el Verapamilo y el Diltiazem (Clase IV)?", opciones: ["Bloqueo AV de 2° o 3° grado sin marcapasos", "Taquicardia supraventricular paroxística", "Control de frecuencia en fibrilación auricular", "Hipertensión arterial concomitante"], respuesta: "Bloqueo AV de 2° o 3° grado sin marcapasos" }
+        {
+            pregunta: "¿Cuál de los siguientes es un calcioantagonista no dihidropiridínico (fenilalquilamina) perteneciente a la Clase IV?",
+            opciones: ["Verapamilo", "Nifedipino", "Amlodipino", "Amiodarona"],
+            respuesta: "Verapamilo",
+            explicacion: "El Verapamilo es una fenilalquilamina cardioselectiva (Clase IV). A diferencia del amlodipino o nifedipino (dihidropiridinas vasculoselectivas), actúa predominantemente sobre el nodo SA, nodo AV y miocardio."
+        },
+        {
+            pregunta: "¿Qué fármaco de Clase IV derivado de las benzotiazepinas bloquea los canales de Ca2+ tipo L y se usa frecuentemente en bolo/infusión IV para control de frecuencia en FA?",
+            opciones: ["Diltiazem", "Sotalol", "Flecainida", "Lidocaína"],
+            respuesta: "Diltiazem",
+            explicacion: "El Diltiazem (benzotiazepina, Clase IV) tiene un perfil intermedio entre el verapamilo y las dihidropiridinas, siendo de primera línea para el control agudo de la respuesta ventricular en FA/flutter sin IC descompensada."
+        },
+        {
+            pregunta: "¿Qué efecto adverso extracardíaco es el más característico del Verapamilo (Clase IV) por bloqueo de canales de Ca2+ en el músculo liso colónico?",
+            opciones: ["Estreñimiento", "Diarrea osmótica", "Hiperplasia gingival severa", "Cinconismo"],
+            respuesta: "Estreñimiento",
+            explicacion: "El Verapamilo relaja el músculo liso gastrointestinal, produciendo estreñimiento hasta en un 10-15% de los pacientes, especialmente en adultos mayores."
+        },
+        {
+            pregunta: "¿En cuál de las siguientes situaciones clínicas están formalmente contraindicados el Verapamilo y el Diltiazem (Clase IV)?",
+            opciones: [
+                "Bloqueo AV de 2° o 3° grado sin marcapasos funcional",
+                "Taquicardia supraventricular paroxística por reentrada nodal",
+                "Control de frecuencia ventricular en fibrilación auricular",
+                "Hipertensión arterial esencial concomitante"
+            ],
+            respuesta: "Bloqueo AV de 2° o 3° grado sin marcapasos funcional",
+            explicacion: "Al deprimir directamente la fase 0 dependiente de Ca2+ en el nodo AV, tanto Verapamilo como Diltiazem pueden precipitar asistolia o bloqueo AV completo si existe trastorno severo de la conducción previo."
+        },
+        {
+            pregunta: "¿Por qué no deben administrarse Verapamilo o Diltiazem (Clase IV) en una fibrilación auricular preexcitada (Síndrome de Wolff-Parkinson-White)?",
+            opciones: ["Bloquean el nodo AV y desvían los impulsos por la vía accesoria, pudiendo causar fibrilación ventricular", "Aceleran la conducción en el nodo AV", "Acortan el período refractario del nodo sinusal", "Provocan crisis hipertensiva paradójica"],
+            respuesta: "Bloquean el nodo AV y desvían los impulsos por la vía accesoria, pudiendo causar fibrilación ventricular",
+            explicacion: "En FA con WPW, los frenadores del nodo AV (Adenosina, Verapamilo, Diltiazem, Beta-bloqueadores, Digoxina) facilitan la conducción anterógrada rápida por el haz de Kent y pueden degenerar en FV. Se usa Procainamida o Ibutilida (o cardioversión eléctrica)."
+        },
+        {
+            pregunta: "¿Qué fase del potencial de acción de las células marcapaso (nodo SA y nodo AV) es enlentecida principalmente por los fármacos de Clase IV?",
+            opciones: ["Fase 0 (despolarización dependiente de Ca2+) y Fase 4", "Fase 1 de repolarización rápida inicial por Cl-", "Fase 3 dependiente exclusivamente de canales IKr", "Fase 0 dependiente de canales rápidos de Na+ (INa)"],
+            respuesta: "Fase 0 (despolarización dependiente de Ca2+) y Fase 4",
+            explicacion: "En los tejidos nodales lentos (SA y AV), la despolarización de fase 0 depende de la entrada de Ca2+ por canales tipo L (y no de Na+ rápido). La Clase IV disminuye la pendiente de fase 0 y fase 4, prolongando el intervalo PR."
+        },
+        {
+            pregunta: "¿Por qué están contraindicados el Verapamilo y el Diltiazem en pacientes con insuficiencia cardíaca con fracción de eyección reducida (ICFEr)?",
+            opciones: ["Por su efecto inotrópico negativo directo al reducir el Ca2+ intracelular del cardiomiocito", "Porque producen vasoconstricción arterial sistémica severa", "Porque inducen taquicardia sinusal refleja extrema", "Porque inhiben la bomba Na+/K+ ATPasa"],
+            respuesta: "Por su efecto inotrópico negativo directo al reducir el Ca2+ intracelular del cardiomiocito",
+            explicacion: "Al bloquear la entrada de Ca2+ durante la meseta (fase 2), disminuyen la liberación de Ca2+ del retículo sarcoplásmico y reducen la fuerza contráctil (efecto inotrópico negativo), pudiendo descompensar una ICFEr."
+        },
+        {
+            pregunta: "¿Qué ocurre si se combina Verapamilo intravenoso con un beta-bloqueador intravenoso de forma simultánea?",
+            opciones: ["Alto riesgo de bradicardia severa, bloqueo AV completo o depresión miocárdica grave", "Efecto sinérgico seguro sin riesgo hemodinámico", "Anulación mutua de sus efectos farmacológicos", "Aparición inmediata de taquicardia ventricular polimórfica"],
+            respuesta: "Alto riesgo de bradicardia severa, bloqueo AV completo o depresión miocárdica grave",
+            explicacion: "La coadministración IV de un calcioantagonista no dihidropiridínico (Clase IV) con un beta-bloqueador (Clase II) suma efectos cronotrópicos, dromotrópicos e inotrópicos negativos, pudiendo causar colapso hemodinámico."
+        },
+        {
+            pregunta: "¿Por qué el Amlodipino y el Nifedipino NO se clasifican como antiarrítmicos de Clase IV a pesar de bloquear canales de Ca2+ tipo L?",
+            opciones: ["Porque son selectivos del músculo liso vascular y pueden causar taquicardia refleja sin frenar el nodo AV", "Porque bloquean exclusivamente canales de calcio tipo T neuronales", "Porque solo actúan en las fibras de Purkinje", "Porque prolongan excesivamente el intervalo PR"],
+            respuesta: "Porque son selectivos del músculo liso vascular y pueden causar taquicardia refleja sin frenar el nodo AV",
+            explicacion: "Las dihidropiridinas (Amlodipino, Nifedipino) tienen selectividad vascular periférica; la vasodilatación que producen activa el reflejo barorreceptor simpático sin deprimir la conducción del nodo AV."
+        },
+        {
+            pregunta: "¿En qué tipo de taquicardia ventricular idiopática (en corazón estructuralmente sano) es característicamente eficaz el Verapamilo?",
+            opciones: ["Taquicardia ventricular fascicular izquierda sensible a verapamilo (síndrome de Belhassen)", "Taquicardia ventricular catecolaminérgica polimórfica", "Torsades de Pointes por síndrome de QT largo congénito", "Fibrilación ventricular secundaria a síndrome de Brugada"],
+            respuesta: "Taquicardia ventricular fascicular izquierda sensible a verapamilo (síndrome de Belhassen)",
+            explicacion: "La TV fascicular posterior izquierda idiopática (morfología de bloqueo de rama derecha y desviación axial izquierda) depende de corrientes lentas de Ca2+ en el circuito de reentrada y responde dramáticamente al Verapamilo."
+        }
     ]
 };
 
@@ -256,27 +437,35 @@ function verificarRespuesta(seleccion, botonPulsado) {
     });
 
     const lblCat = document.getElementById("lbl-categoria");
+    const cajaExp = document.getElementById("caja-explicacion");
+
     if (seleccion === correcta) {
         puntaje += PUNTOS_POR_ACIERTO;
         racha++;
         if (racha > rachaMaxima) rachaMaxima = racha;
         lblCat.textContent = `¡Respuesta Correcta! +${PUNTOS_POR_ACIERTO} pts 🎉`;
         lblCat.style.color = "#2ECC71";
+        cajaExp.style.borderLeftColor = "#2ECC71";
     } else {
         racha = 0;
         vidas--;
         lblCat.textContent = `Incorrecto (-1 ❤️). La respuesta era: ${correcta}`;
         lblCat.style.color = "#E74C3C";
+        cajaExp.style.borderLeftColor = "#E74C3C";
     }
+
+    // Mostrar la explicación clínica debajo de las respuestas
+    document.getElementById("texto-explicacion").textContent = preguntaActual.explicacion;
+    cajaExp.style.display = "block";
 
     actualizarMarcadores();
 
     if (puntaje >= META_PUNTOS) {
         juegoTerminado = true;
-        setTimeout(() => mostrarModalFinal(true), 850);
+        setTimeout(() => mostrarModalFinal(true), 1400);
     } else if (vidas <= 0) {
         juegoTerminado = true;
-        setTimeout(() => mostrarModalFinal(false), 850);
+        setTimeout(() => mostrarModalFinal(false), 1400);
     } else {
         document.getElementById("btn-girar").disabled = false;
     }
@@ -293,6 +482,8 @@ function limpiarPregunta() {
     lblCat.textContent = "Girando la ruleta...";
     lblCat.style.color = "#BDC3C7";
     document.getElementById("lbl-pregunta").textContent = "Esperando resultado de la ruleta...";
+    document.getElementById("caja-explicacion").style.display = "none";
+
     const letras = ["A", "B", "C", "D"];
     document.querySelectorAll(".btn-opcion").forEach((btn, i) => {
         btn.className = "btn-opcion";
@@ -311,7 +502,7 @@ function mostrarModalFinal(victoria) {
     } else {
         titulo.textContent = "💔 ¡TE QUEDASTE SIN VIDAS! 💔";
         titulo.style.color = "#E74C3C";
-        msg.textContent = "Has agotado tus 3 intentos. ¡Repasa los mecanismos y vuelve a intentarlo!";
+        msg.textContent = "Has agotado tus 3 intentos. ¡Repasa las perlas clínicas y vuelve a intentarlo!";
     }
     document.getElementById("modal-stats").innerHTML = 
         `Puntaje final: ${puntaje} / ${META_PUNTOS} pts<br>` +
@@ -334,6 +525,8 @@ function reiniciarJuego() {
     lblCat.textContent = "Partida reiniciada: Gira la ruleta para comenzar";
     lblCat.style.color = "#BDC3C7";
     document.getElementById("lbl-pregunta").textContent = `Consigue ${META_PUNTOS} puntos antes de perder tus ${VIDAS_INICIALES} vidas.`;
+    document.getElementById("caja-explicacion").style.display = "none";
+
     const letras = ["A", "B", "C", "D"];
     document.querySelectorAll(".btn-opcion").forEach((btn, i) => {
         btn.className = "btn-opcion";
