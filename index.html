@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntados: Fármacos Antiarrítmicos</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Helvetica, Arial, sans-serif; }
+        body { background-color: #2C3E50; color: #ECF0F1; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+        
+        /* Barra superior */
+        header { background-color: #1A252F; padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .vidas { font-size: 1.3rem; font-weight: bold; min-width: 170px; }
+        .titulo-central { text-align: center; flex: 1; }
+        .titulo-central h1 { font-size: 1.5rem; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .marcador { color: #F1C40F; font-size: 1.1rem; font-weight: bold; }
+        .btn-reiniciar { background-color: #34495E; color: #ECF0F1; border: none; padding: 10px 16px; font-size: 0.95rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .btn-reiniciar:hover { background-color: #46627F; }
+
+        /* Contenedor Principal en 2 Columnas */
+        main { flex: 1; display: grid; grid-template-columns: 1fr 1.15fr; gap: 30px; padding: 25px 35px; align-items: center; max-width: 1400px; width: 100%; margin: 0 auto; }
+
+        /* Columna Izquierda: Ruleta */
+        .columna-ruleta { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .contenedor-canvas { position: relative; width: 360px; height: 360px; display: flex; justify-content: center; align-items: center; }
+        canvas { border-radius: 50%; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.35)); }
+        .flecha { position: absolute; top: 2px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-top: 32px solid #E74C3C; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); z-index: 5; }
+        .btn-girar { margin-top: 20px; background-color: #E67E22; color: white; border: none; padding: 14px 38px; font-size: 1.25rem; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: 0.2s; }
+        .btn-girar:hover:not(:disabled) { background-color: #D35400; transform: translateY(-2px); }
+        .btn-girar:disabled { background-color: #7F8C8D; cursor: not-allowed; opacity: 0.7; }
+
+        /* Columna Derecha: Tarjeta de Preguntas */
+        .tarjeta-pregunta { background-color: #34495E; padding: 28px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; min-height: 460px; box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
+        .categoria { font-size: 1.35rem; font-weight: bold; text-align: center; color: #BDC3C7; margin-bottom: 12px; }
+        .enunciado { font-size: 1.25rem; text-align: center; line-height: 1.45; margin: 15px 0 25px 0; min-height: 75px; display: flex; align-items: center; justify-content: center; }
+        .opciones { display: flex; flex-direction: column; gap: 12px; }
+        .btn-opcion { background-color: #ECF0F1; color: #2C3E50; border: none; padding: 15px 18px; font-size: 1.08rem; font-weight: bold; border-radius: 8px; cursor: pointer; text-align: left; transition: 0.15s; }
+        .btn-opcion:hover:not(:disabled) { background-color: #D6DBDF; transform: translateX(4px); }
+        .btn-opcion:disabled { cursor: not-allowed; color: #7F8C8D; }
+        .btn-opcion.correcta { background-color: #2ECC71 !important; color: white !important; }
+        .btn-opcion.incorrecta { background-color: #E74C3C !important; color: white !important; }
+
+        /* Modal de Fin de Juego */
+        .modal-fondo { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; z-index: 20; padding: 15px; }
+        .modal { background-color: #1A252F; padding: 30px; border-radius: 12px; max-width: 460px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid #34495E; }
+        .modal h2 { font-size: 1.55rem; margin-bottom: 12px; }
+        .modal p { font-size: 1.05rem; margin-bottom: 18px; line-height: 1.4; }
+        .stats-box { background-color: #2C3E50; padding: 15px; border-radius: 8px; color: #F1C40F; font-weight: bold; line-height: 1.7; margin-bottom: 22px; }
+        .btn-jugar-nuevo { background-color: #2ECC71; color: white; border: none; padding: 12px 26px; font-size: 1.1rem; font-weight: bold; border-radius: 8px; cursor: pointer; }
+        .btn-jugar-nuevo:hover { background-color: #27AE60; }
+
+        /* Adaptación automática para celulares */
+        @media (max-width: 900px) {
+            main { grid-template-columns: 1fr; padding: 15px; }
+            .contenedor-canvas { width: 290px; height: 290px; }
+            .tarjeta-pregunta { min-height: auto; padding: 20px; }
+            header { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="vidas" id="lbl-vidas">Vidas: ❤️ ❤️ ❤️</div>
+        <div class="titulo-central">
+            <h1>PREGUNTADOS: FÁRMACOS ANTIARRÍTMICOS</h1>
+            <div class="marcador" id="lbl-puntaje">Puntaje: 0 / 1000 🏆 &nbsp;|&nbsp; Racha: 0 🔥</div>
+        </div>
+        <button class="btn-reiniciar" onclick="reiniciarJuego()">🔄 Reiniciar Partida</button>
+    </header>
+
+    <main>
+        <div class="columna-ruleta">
+            <div class="contenedor-canvas">
+                <div class="flecha"></div>
+                <canvas id="ruleta" width="340" height="340"></canvas>
+            </div>
+            <button class="btn-girar" id="btn-girar" onclick="iniciarGiro()">¡GIRAR RULETA!</button>
+        </div>
+
+        <div class="tarjeta-pregunta">
+            <div>
+                <div class="categoria" id="lbl-categoria">Gira la ruleta para seleccionar una clase</div>
+                <div class="enunciado" id="lbl-pregunta">Consigue 1000 puntos antes de perder tus 3 vidas.</div>
+            </div>
+            <div class="opciones" id="contenedor-opciones">
+                <button class="btn-opcion" disabled>Opción A</button>
+                <button class="btn-opcion" disabled>Opción B</button>
+                <button class="btn-opcion" disabled>Opción C</button>
+                <button class="btn-opcion" disabled>Opción D</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Victoria / Derrota -->
+    <div class="modal-fondo" id="modal-final">
+        <div class="modal">
+            <h2 id="modal-titulo"></h2>
+            <p id="modal-mensaje"></p>
+            <div class="stats-box" id="modal-stats"></div>
+            <button class="btn-jugar-nuevo" onclick="cerrarModalYReiniciar()">🔄 Jugar de Nuevo</button>
+        </div>
+    </div>
+
+<script>
+const META_PUNTOS = 1000;
+const VIDAS_INICIALES = 3;
+const PUNTOS_POR_ACIERTO = 100;
+
+const BANCO_PREGUNTAS = {
+    "Clase I": [
+        { pregunta: "¿Cuál de los siguientes fármacos pertenece a la Clase IC (potente bloqueo de canales de Na+)?", opciones: ["Flecainida", "Amiodarona", "Verapamilo", "Sotalol"], respuesta: "Flecainida" },
+        { pregunta: "¿Qué antiarrítmico de Clase IA se asocia clásicamente con el síndrome de 'cinconismo'?", opciones: ["Quinidina", "Lidocaína", "Propafenona", "Diltiazem"], respuesta: "Quinidina" },
+        { pregunta: "¿Cuál es un fármaco de Clase IB útil en arritmias ventriculares agudas post-infarto?", opciones: ["Lidocaína", "Dronedarona", "Procainamida", "Ibutilida"], respuesta: "Lidocaína" },
+        { pregunta: "¿Qué fármaco de Clase IA puede inducir un síndrome similar al lupus eritematoso sistémico?", opciones: ["Procainamida", "Mexiletina", "Flecainida", "Dofetilida"], respuesta: "Procainamida" },
+        { pregunta: "¿Cuál de estos fármacos es un bloqueador de canales de sodio de Clase IC con débil actividad beta-bloqueadora?", opciones: ["Propafenona", "Disopiramida", "Verapamilo", "Amiodarona"], respuesta: "Propafenona" }
+    ],
+    "Clase III": [
+        { pregunta: "¿Cuál es el fármaco de Clase III conocido por causar toxicidad pulmonar, tiroidea y depósitos corneales?", opciones: ["Amiodarona", "Propafenona", "Lidocaína", "Diltiazem"], respuesta: "Amiodarona" },
+        { pregunta: "¿Qué antiarrítmico de Clase III combina el bloqueo de canales de K+ con actividad beta-bloqueadora no selectiva?", opciones: ["Sotalol", "Dronedarona", "Flecainida", "Verapamilo"], respuesta: "Sotalol" },
+        { pregunta: "¿Qué análogo no yodado de la amiodarona pertenece a la Clase III y está contraindicado en insuficiencia cardíaca severa?", opciones: ["Dronedarona", "Quinidina", "Mexiletina", "Procainamida"], respuesta: "Dronedarona" },
+        { pregunta: "¿Cuál de los siguientes es un bloqueador puro de canales de potasio (Clase III) usado para cardioversión farmacológica de flutter auricular?", opciones: ["Dofetilida", "Disopiramida", "Lidocaína", "Verapamilo"], respuesta: "Dofetilida" }
+    ],
+    "Clase IV": [
+        { pregunta: "¿Cuál de los siguientes es un calcioantagonista no dihidropiridínico perteneciente a la Clase IV?", opciones: ["Verapamilo", "Nifedipino", "Amlodipino", "Amiodarona"], respuesta: "Verapamilo" },
+        { pregunta: "¿Qué fármaco de Clase IV bloquea los canales de Ca2+ tipo L y disminuye la conducción en el nodo AV?", opciones: ["Diltiazem", "Sotalol", "Flecainida", "Lidocaína"], respuesta: "Diltiazem" },
+        { pregunta: "¿Qué efecto adverso es el más característico del Verapamilo (Clase IV) a nivel gastrointestinal?", opciones: ["Estreñimiento", "Diarrea osmótica", "Hiperplasia gingival severa", "Cinconismo"], respuesta: "Estreñimiento" },
+        { pregunta: "¿En cuál de las siguientes situaciones están contraindicados el Verapamilo y el Diltiazem (Clase IV)?", opciones: ["Bloqueo AV de 2° o 3° grado sin marcapasos", "Taquicardia supraventricular paroxística", "Control de frecuencia en fibrilación auricular", "Hipertensión arterial concomitante"], respuesta: "Bloqueo AV de 2° o 3° grado sin marcapasos" }
+    ]
+};
+
+const COLORES_CLASES = { "Clase I": "#FF6B6B", "Clase III": "#4ECDC4", "Clase IV": "#FFE66D" };
+const CLASES = ["Clase I", "Clase III", "Clase IV"];
+
+let puntaje = 0, racha = 0, rachaMaxima = 0, vidas = VIDAS_INICIALES;
+let anguloActual = 0, girando = false, juegoTerminado = false;
+let mazoDisponible = {};
+let preguntaActual = null;
+
+const canvas = document.getElementById("ruleta");
+const ctx = canvas.getContext("2d");
+
+function restaurarMazo() {
+    for (let c of CLASES) mazoDisponible[c] = [...BANCO_PREGUNTAS[c]];
+}
+
+function dibujarRuleta() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const cx = 170, cy = 170, r = 158;
+
+    CLASES.forEach((clase, i) => {
+        const inicioGrados = (anguloActual + i * 120) % 360;
+        const radInicio = ( -inicioGrados - 120 ) * Math.PI / 180;
+        const radFin = ( -inicioGrados ) * Math.PI / 180;
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r, radInicio, radFin);
+        ctx.closePath();
+        ctx.fillStyle = COLORES_CLASES[clase];
+        ctx.fill();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "#2C3E50";
+        ctx.stroke();
+
+        const anguloMedio = -(inicioGrados + 60) * Math.PI / 180;
+        const tx = cx + (r * 0.62) * Math.cos(anguloMedio);
+        const ty = cy + (r * 0.62) * Math.sin(anguloMedio);
+
+        ctx.fillStyle = "#1A252F";
+        ctx.font = "bold 20px Helvetica, Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(clase, tx, ty);
+    });
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, 26, 0, Math.PI * 2);
+    ctx.fillStyle = "#2C3E50";
+    ctx.fill();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#FFFFFF";
+    ctx.stroke();
+}
+
+function iniciarGiro() {
+    if (girando || juegoTerminado) return;
+    girando = true;
+    document.getElementById("btn-girar").disabled = true;
+    limpiarPregunta();
+
+    let pasosRestantes = Math.floor(Math.random() * 21) + 35;
+    let velocidad = 28;
+
+    function animar() {
+        if (pasosRestantes > 0) {
+            anguloActual = (anguloActual + velocidad) % 360;
+            dibujarRuleta();
+            pasosRestantes--;
+            if (pasosRestantes < 18) velocidad = Math.max(3, velocidad * 0.88);
+            setTimeout(animar, 30);
+        } else {
+            girando = false;
+            determinarClaseGanadora();
+        }
+    }
+    animar();
+}
+
+function determinarClaseGanadora() {
+    let ganadora = "Clase I";
+    for (let i = 0; i < CLASES.length; i++) {
+        let inicio = (anguloActual + i * 120) % 360;
+        let fin = (inicio + 120) % 360;
+        if (inicio < fin) {
+            if (90 >= inicio && 90 < fin) { ganadora = CLASES[i]; break; }
+        } else {
+            if (90 >= inicio || 90 < fin) { ganadora = CLASES[i]; break; }
+        }
+    }
+    mostrarPregunta(ganadora);
+}
+
+function mostrarPregunta(clase) {
+    const lblCat = document.getElementById("lbl-categoria");
+    lblCat.textContent = `Categoría: ${clase} (Vaughan Williams)`;
+    lblCat.style.color = COLORES_CLASES[clase];
+
+    if (mazoDisponible[clase].length === 0) mazoDisponible[clase] = [...BANCO_PREGUNTAS[clase]];
+    const idx = Math.floor(Math.random() * mazoDisponible[clase].length);
+    preguntaActual = mazoDisponible[clase].splice(idx, 1)[0];
+
+    document.getElementById("lbl-pregunta").textContent = preguntaActual.pregunta;
+
+    const opcionesMezcladas = [...preguntaActual.opciones].sort(() => Math.random() - 0.5);
+    const letras = ["A", "B", "C", "D"];
+    const botones = document.querySelectorAll(".btn-opcion");
+
+    botones.forEach((btn, i) => {
+        btn.className = "btn-opcion";
+        btn.disabled = false;
+        btn.textContent = `${letras[i]})  ${opcionesMezcladas[i]}`;
+        btn.onclick = () => verificarRespuesta(opcionesMezcladas[i], btn);
+    });
+}
+
+function verificarRespuesta(seleccion, botonPulsado) {
+    const correcta = preguntaActual.respuesta;
+    const botones = document.querySelectorAll(".btn-opcion");
+
+    botones.forEach(btn => {
+        btn.disabled = true;
+        const textoLimpio = btn.textContent.split(")  ")[1];
+        if (textoLimpio === correcta) btn.classList.add("correcta");
+        else if (btn === botonPulsado && seleccion !== correcta) btn.classList.add("incorrecta");
+    });
+
+    const lblCat = document.getElementById("lbl-categoria");
+    if (seleccion === correcta) {
+        puntaje += PUNTOS_POR_ACIERTO;
+        racha++;
+        if (racha > rachaMaxima) rachaMaxima = racha;
+        lblCat.textContent = `¡Respuesta Correcta! +${PUNTOS_POR_ACIERTO} pts 🎉`;
+        lblCat.style.color = "#2ECC71";
+    } else {
+        racha = 0;
+        vidas--;
+        lblCat.textContent = `Incorrecto (-1 ❤️). La respuesta era: ${correcta}`;
+        lblCat.style.color = "#E74C3C";
+    }
+
+    actualizarMarcadores();
+
+    if (puntaje >= META_PUNTOS) {
+        juegoTerminado = true;
+        setTimeout(() => mostrarModalFinal(true), 850);
+    } else if (vidas <= 0) {
+        juegoTerminado = true;
+        setTimeout(() => mostrarModalFinal(false), 850);
+    } else {
+        document.getElementById("btn-girar").disabled = false;
+    }
+}
+
+function actualizarMarcadores() {
+    const corazones = "❤️ ".repeat(vidas) + "🖤 ".repeat(VIDAS_INICIALES - vidas);
+    document.getElementById("lbl-vidas").textContent = `Vidas: ${corazones.trim()}`;
+    document.getElementById("lbl-puntaje").innerHTML = `Puntaje: ${puntaje} / ${META_PUNTOS} 🏆 &nbsp;|&nbsp; Racha: ${racha} 🔥`;
+}
+
+function limpiarPregunta() {
+    const lblCat = document.getElementById("lbl-categoria");
+    lblCat.textContent = "Girando la ruleta...";
+    lblCat.style.color = "#BDC3C7";
+    document.getElementById("lbl-pregunta").textContent = "Esperando resultado de la ruleta...";
+    const letras = ["A", "B", "C", "D"];
+    document.querySelectorAll(".btn-opcion").forEach((btn, i) => {
+        btn.className = "btn-opcion";
+        btn.disabled = true;
+        btn.textContent = `Opción ${letras[i]}`;
+    });
+}
+
+function mostrarModalFinal(victoria) {
+    const titulo = document.getElementById("modal-titulo");
+    const msg = document.getElementById("modal-mensaje");
+    if (victoria) {
+        titulo.textContent = "🏆 ¡VICTORIA FARMACOLÓGICA! 🏆";
+        titulo.style.color = "#2ECC71";
+        msg.textContent = `¡Alcanzaste la meta de ${META_PUNTOS} puntos! Dominas la clasificación de Vaughan Williams.`;
+    } else {
+        titulo.textContent = "💔 ¡TE QUEDASTE SIN VIDAS! 💔";
+        titulo.style.color = "#E74C3C";
+        msg.textContent = "Has agotado tus 3 intentos. ¡Repasa los mecanismos y vuelve a intentarlo!";
+    }
+    document.getElementById("modal-stats").innerHTML = 
+        `Puntaje final: ${puntaje} / ${META_PUNTOS} pts<br>` +
+        `Mejor racha de aciertos: ${rachaMaxima} 🔥<br>` +
+        `Vidas restantes: ${vidas} / ${VIDAS_INICIALES}`;
+    document.getElementById("modal-final").style.display = "flex";
+}
+
+function cerrarModalYReiniciar() {
+    document.getElementById("modal-final").style.display = "none";
+    reiniciarJuego();
+}
+
+function reiniciarJuego() {
+    if (girando) return;
+    puntaje = 0; racha = 0; rachaMaxima = 0; vidas = VIDAS_INICIALES; juegoTerminado = false;
+    restaurarMazo();
+    actualizarMarcadores();
+    const lblCat = document.getElementById("lbl-categoria");
+    lblCat.textContent = "Partida reiniciada: Gira la ruleta para comenzar";
+    lblCat.style.color = "#BDC3C7";
+    document.getElementById("lbl-pregunta").textContent = `Consigue ${META_PUNTOS} puntos antes de perder tus ${VIDAS_INICIALES} vidas.`;
+    const letras = ["A", "B", "C", "D"];
+    document.querySelectorAll(".btn-opcion").forEach((btn, i) => {
+        btn.className = "btn-opcion";
+        btn.disabled = true;
+        btn.textContent = `Opción ${letras[i]}`;
+    });
+    document.getElementById("btn-girar").disabled = false;
+}
+
+restaurarMazo();
+dibujarRuleta();
+</script>
+</body>
+</html>
